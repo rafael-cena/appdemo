@@ -10,7 +10,7 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
   // Obter o endereço IP do servidor
-  const ip = getIpAddress();
+  const ip = getIpAddress() + "GITACTIONS";
 
   // Obter a hora atual do servidor
   const horaAtual = moment().format('YYYY-MM-DD HH:mm:ss');
