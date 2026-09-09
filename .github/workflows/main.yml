@@ -24,13 +24,14 @@ jobs:
 
       - name: Ajustar permissões no servidor de Produção
         run: |
-          ssh -i /tmp/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ secrets.HOST }} "sudo chown -R ubuntu:ubuntu /home/ubuntu/app && sudo chmod -R 755 /home/ubuntu/appdemo"
+          ssh -i /tmp/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ secrets.HOST }} "sudo chown -R ubuntu:ubuntu /home/ubuntu/appdemo && sudo chmod -R 755 /home/ubuntu/appdemo"
 
       - name: Transferindo os arquivos da aplicação
         run: |
                scp -i /tmp/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${{ github.workspace }}/* ubuntu@${{ secrets.HOST }}:/home/ubuntu/appdemo
 
       - name: Restaurando a aplicação
+      
         run: |
                ssh -i /tmp/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{ secrets.HOST }} \
                sudo npm install --prefix /home/ubuntu/appdemo \
