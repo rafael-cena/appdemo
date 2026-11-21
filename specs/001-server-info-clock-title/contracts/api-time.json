@@ -1,0 +1,52 @@
+{
+  "endpoint": "/api/time",
+  "method": "GET",
+  "description": "Returns the current server time in ISO-like format",
+  "request": {
+    "headers": {
+      "Accept": "application/json"
+    },
+    "query": {},
+    "body": null
+  },
+  "response": {
+    "200": {
+      "description": "Current server time",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
+      "body": {
+        "type": "object",
+        "required": ["time"],
+        "properties": {
+          "time": {
+            "type": "string",
+            "format": "YYYY-MM-DD HH:mm:ss",
+            "description": "Server time formatted as YYYY-MM-DD HH:mm:ss",
+            "example": "2026-11-21 14:30:45"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Server error retrieving time",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Falha ao obter hora do servidor"
+          }
+        }
+      }
+    }
+  }
+}
