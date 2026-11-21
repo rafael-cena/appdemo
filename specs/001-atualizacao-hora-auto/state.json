@@ -4,17 +4,34 @@
   "branch": "001-atualizacao-hora-auto",
   "gh_path": "gh",
   "pull_request": "",
-  "commands": {},
+  "commands": {
+    "test": "npm test",
+    "lint": null,
+    "build": null
+  },
   "last_reviewed_commit": "",
-  "stage": "ESPECIFICACAO_APROVADA",
+  "stage": "PLANEJANDO",
   "artifacts": {
     "spec.md": "E1",
-    "checklists/requirements.md": "E1"
+    "checklists/requirements.md": "E1",
+    "plan.md": "E2",
+    "research.md": "E2",
+    "data-model.md": "E2",
+    "quickstart.md": "E2",
+    "contracts/api-time.json": "E2"
   },
-  "gates": {},
+  "gates": {
+    "constitution_check": "pass",
+    "technical_decisions": {
+      "endpoint": "GET /api/time returns server time JSON",
+      "frontend_polling": "inline JS in EJS with setInterval(fetch, 1000)",
+      "title_change": "direct edit in index.ejs"
+    }
+  },
   "tasks_done": [],
   "blockers": [
-    "GitHub CLI (gh) não encontrado no sistema - necessário para criar PR no E7"
+    "GitHub CLI (gh) não encontrado no sistema - necessário para criar PR no E7",
+    "npm test é placeholder - não há framework de teste configurado"
   ],
   "human_checkpoints": {
     "specification_review": {
