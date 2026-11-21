@@ -4,7 +4,12 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "jest --coverage",
+    "test:unit": "jest tests/unit --coverage",
+    "test:integration": "jest tests/integration --coverage",
+    "test:e2e": "playwright test",
+    "test:coverage": "jest --coverage --coverageReporters=text-lcov"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +18,29 @@
     "express": "^4.18.2",
     "moment": "^2.29.4",
     "os": "^0.1.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "@playwright/test": "^1.42.1",
+    "playwright": "^1.42.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "app.js",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 80,
+        "branches": 80,
+        "functions": 75,
+        "lines": 80
+      }
+    }
   }
 }

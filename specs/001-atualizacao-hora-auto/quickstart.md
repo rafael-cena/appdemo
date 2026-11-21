@@ -1,89 +1,176 @@
-# Quickstart: Atualização Automática da Hora do Servidor
-
-**Feature**: 001-atualizacao-hora-auto
-**Date**: 2026-11-20
+# Quickstart: Validação da Atualização Automática da Hora
 
 ## Pré-requisitos
 
 - Node.js 18+ instalado
-- Git (para clonar/obter o código)
-- Navegador moderno com suporte a ES6+ (fetch, setInterval, arrow functions)
+- npm 9+ instalado
+- Git (para clonar/checkout da branch)
 
 ## Setup
 
 ```bash
-# 1. Clonar/acessar o repositório
-cd /caminho/para/appdemo
+# 1. Navegar para o repositório
+cd D:\UNOESTE\8° TERMO\TTC III\projetofinal\appdemo
 
-# 2. Instalar dependências
+# 2. Confirmar branch da feature
+git switch 001-atualizacao-hora-auto
+git branch --show-current
+# Deve mostrar: 001-atualizacao-hora-auto
+
+# 3. Instalar dependências (inclui devDependencies de teste)
 npm install
 
-# 3. Iniciar servidor
-node app.js
-# Servidor rodando em http://localhost:3000
+# 4. Iniciar servidor em background
+npm start &
+# Servidor roda em http://localhost:3000
 ```
 
-## Validação Manual (Browser)
+## Cenários de Validação
 
-### 1. Carregamento Inicial
-- Abrir `http://localhost:3000`
-- **Verificar**: Página carrega em <3 segundos (SC-005)
-- **Verificar**: Título da aba = "App Demo - Informações do Servidor (alterado pelo Claude Code)" (SC-002)
-- **Verificar**: Cabeçalho (h1) = "Informações do Servidor (alterado pelo Claude Code)" (SC-003)
-- **Verificar**: IP do servidor exibido (SC-004)
-- **Verificar**: Hora inicial no formato YYYY-MM-DD HH:mm:ss (FR-001)
+### Cenário 1: Título e Cabeçalho Atualizados (US2, FR-004, FR-005, SC-002, SC-003)
 
-### 2. Atualização Automática (Polling)
-- Aguardar 10 segundos sem recarregar a página
-- **Verificar**: Hora atualiza a cada ~1 segundo (segundos incrementam) (SC-001, FR-002)
-- **Verificar**: No DevTools Network (F12), requisições `GET /api/time` a cada 1s com status 200
-- **Verificar**: Response JSON válido: `{"time":"2026-11-20 14:30:45","source":"server"}`
+**Comando**:
+```bash
+curl -s http://localhost:3000 | grep -E '<title>|<h1>'
+```
 
-### 3. Fallback Gracioso (Opcional)
-- No DevTools (F12) → Settings → Disable JavaScript
-- Recarregar página
-- **Verificar**: Hora inicial ainda visível (renderizada server-side) (FR-007)
-- Reabilitar JavaScript
+**Resultado Esperado**:
+```html
+<title>App Demo - Informações do Servidor (alterado pelo Claude Code)</title>
+<h1>Informações do Servidor (alterado pelo Claude Code)</h1>
+```
 
-### 4. Teste de Memória (Opcional - SC-006)
-- Abrir DevTools → Memory tab
-- Gravar heap snapshot inicial
-- Aguardar 5 minutos com página aberta
-- Gravar segundo snapshot
-- **Verificar**: Diferença < 10MB
+**Critério de Pass**: Ambos os textos exatos estão presentes.
 
-## Endpoint API Direto (para teste via curl/Postman)
+---
+
+### Cenário 2: IP do Servidor Exibido (FR-006, SC-004)
+
+**Comando**:
+```bash
+curl -s http://localhost:3000 | grep 'Endereço IP do Servidor'
+```
+
+**Resultado Esperado**:
+```html
+<p>Endereço IP do Servidor: <IP_VÁLIDO>GITACTIONS</p>
+```
+(Onde `<IP_VÁLIDO>` é um IPv4 não-interno, ex: 192.168.x.x)
+
+---
+
+### Cenário 3: Endpoint `/api/time` Retorna Hora Válida (FR-003, RV-005)
+
+**Comando**:
+```bash
+curl -s -H "Accept: application/json" http://localhost:3000/api/time
+```
+
+**Resultado Esperado**:
+```json
+{"time":"2026-11-20 14:30:45"}
+```
+
+**Validação**:
+- Status HTTP 200
+- Content-Type: application/json
+- Campo `time` no formato `YYYY-MM-DD HH:mm:ss` (regex: `^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$`)
+
+---
+
+### Cenário 4: Atualização Automática a Cada Segundo no Navegador (US1, FR-002, SC-001)
+
+**Pré-requisito**: Navegador com Playwright instalado (`npx playwright install chromium`)
+
+**Teste Automatizado (Playwright)**:
+```bash
+# Executar teste E2E específico
+npx playwright test tests/e2e/clock.spec.js --headed
+```
+
+**O que o teste verifica**:
+1. Página carrega com hora inicial
+2. Após 1 segundo, hora no DOM é atualizada
+3. Após 3 segundos, hora foi atualizada 3 vezes (progressão de segundos)
+4. Intervalo entre atualizações: 1000ms ± 100ms
+
+**Validação Manual (Alternativa)**:
+1. Abrir `http://localhost:3000` no navegador
+2. Abrir DevTools (F12) → Console
+3. Observar o elemento `<p>Hora Atual do Servidor: ...</p>`
+4. Confirmar que o valor muda a cada segundo sem reload da página
+
+---
+
+### Cenário 5: Fallback Gracioso sem JavaScript (FR-007)
+
+**Comando**:
+```bash
+# Desabilitar JS no navegador OU usar curl (que não executa JS)
+curl -s http://localhost:3000 | grep 'Hora Atual do Servidor'
+```
+
+**Resultado Esperado**:
+```html
+<p>Hora Atual do Servidor: 2026-11-20 14:30:45</p>
+```
+(Hora renderizada server-side está presente, mesmo sem JS executar)
+
+---
+
+### Cenário 6: Performance e Memória (SC-005, SC-006)
+
+**Carga Inicial (< 3s)**:
+```bash
+time curl -s -o /dev/null -w "%{time_total}\n" http://localhost:3000
+# Deve retornar < 3.000
+```
+
+**Memória (validação manual via DevTools)**:
+1. Abrir página no Chrome
+2. DevTools → Memory → Take heap snapshot
+3. Aguardar 5 minutos
+4. Take heap snapshot → Comparar
+5. Diferença < 10MB
+
+---
+
+## Executar Testes Automatizados
 
 ```bash
-# Obter hora atual do servidor
-curl http://localhost:3000/api/time
+# Testes unitários + integração (Jest)
+npm test
 
-# Resposta esperada:
-# {"time":"2026-11-20 14:30:45","source":"server"}
+# Testes E2E (Playwright)
+npm run test:e2e
+
+# Todos os testes com coverage
+npm run test:coverage
 ```
 
-## Comandos de Verificação do Projeto
+**Critérios de Passagem**:
+- Todos os testes unitários/integração passam
+- Todos os testes E2E passam
+- Coverage ≥ 80% (statements, branches, functions, lines)
 
-| Comando | Descrição | Status Atual |
-|---------|-----------|--------------|
-| `npm test` | Executar testes | Placeholder (não configurado) |
-| `npm run lint` | Linting | Não configurado |
-| `node app.js` | Iniciar servidor | Funcional |
+---
 
-## Critérios de Sucesso (Checklist)
+## Parar Servidor
 
-- [ ] SC-001: Hora atualiza a cada 1s (±100ms) sem reload
-- [ ] SC-002: Título da aba = "App Demo - Informações do Servidor (alterado pelo Claude Code)"
-- [ ] SC-003: Cabeçalho h1 = "Informações do Servidor (alterado pelo Claude Code)"
-- [ ] SC-004: IP do servidor exibido corretamente
-- [ ] SC-005: Carregamento < 3s em conexão local
-- [ ] SC-006: Sem vazamento memória >10MB em 5min (opcional)
+```bash
+# Encontrar PID do node
+netstat -ano | findstr :3000
+# Ou no PowerShell:
+Get-Process node | Where-Object {$_.CPU -gt 0} | Stop-Process
 
-## Troubleshooting
+# Ou simplesmente Ctrl+C se rodou em foreground
+```
 
-| Problema | Causa Provável | Solução |
-|----------|----------------|---------|
-| Hora não atualiza | JS desabilitado ou erro no fetch | Verificar console (F12) por erros; verificar rota `/api/time` |
-| Erro 404 em `/api/time` | Rota não registrada em app.js | Verificar se `app.get('/api/time', ...)` foi adicionado |
-| Hora mostra "Invalid Date" | moment() falhou | Verificar se moment está instalado (`npm list moment`) |
-| Título não mudou | Cache do browser | Hard reload (Ctrl+Shift+R) ou limpar cache |
+---
+
+## Referências
+
+- **Spec**: `specs/001-atualizacao-hora-auto/spec.md`
+- **Plan**: `specs/001-atualizacao-hora-auto/plan.md`
+- **Data Model**: `specs/001-atualizacao-hora-auto/data-model.md`
+- **API Contract**: `specs/001-atualizacao-hora-auto/contracts/api-time.json`

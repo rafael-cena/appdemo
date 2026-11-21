@@ -1,7 +1,7 @@
 {
   "endpoint": "/api/time",
   "method": "GET",
-  "description": "Retorna a hora atual do servidor",
+  "description": "Retorna a hora atual do servidor no formato YYYY-MM-DD HH:mm:ss",
   "request": {
     "headers": {
       "Accept": "application/json"
@@ -10,52 +10,51 @@
     "body": null
   },
   "response": {
-    "200": {
-      "description": "Hora atual obtida com sucesso",
-      "contentType": "application/json",
-      "schema": {
+    "success": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      },
+      "body": {
         "type": "object",
         "properties": {
           "time": {
             "type": "string",
+            "format": "date-time-custom",
             "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
-            "description": "Hora atual do servidor no formato YYYY-MM-DD HH:mm:ss",
+            "description": "Hora atual do servidor no formato YYYY-MM-DD HH:mm:ss (24h)",
             "example": "2026-11-20 14:30:45"
-          },
-          "source": {
-            "type": "string",
-            "enum": ["server"],
-            "description": "Origem da hora (sempre 'server')",
-            "example": "server"
           }
         },
-        "required": ["time", "source"],
+        "required": ["time"],
         "additionalProperties": false
-      },
-      "examples": [
-        {
-          "time": "2026-11-20 14:30:45",
-          "source": "server"
-        }
-      ]
+      }
     },
-    "500": {
-      "description": "Erro interno ao obter hora do servidor",
-      "contentType": "application/json",
-      "schema": {
+    "error": {
+      "status": 500,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
         "type": "object",
         "properties": {
           "error": {
             "type": "string",
-            "example": "Internal Server Error"
+            "description": "Mensagem de erro",
+            "example": "Falha ao obter hora do servidor"
           }
-        }
+        },
+        "required": ["error"],
+        "additionalProperties": false
       }
     }
   },
-  "rateLimit": {
-    "requests": 60,
-    "window": "1 minute",
-    "description": "Polling esperado a cada 1 segundo (60 req/min)"
-  }
+  "contracts": [
+    "FR-002: Atualização automática a cada segundo",
+    "FR-003: Hora deve vir do servidor",
+    "SC-001: Atualização a cada 1s ±100ms"
+  ]
 }
