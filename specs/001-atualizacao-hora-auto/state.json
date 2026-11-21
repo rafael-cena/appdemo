@@ -6,7 +6,7 @@
   "pull_request": "",
   "commands": {},
   "last_reviewed_commit": "",
-  "stage": "AGUARDANDO_REVISAO_HUMANA",
+  "stage": "ESPECIFICACAO_APROVADA",
   "artifacts": {
     "spec.md": "E1",
     "checklists/requirements.md": "E1"
@@ -18,7 +18,9 @@
   ],
   "human_checkpoints": {
     "specification_review": {
-      "status": "pendente"
+      "status": "aprovado",
+      "aprovado_em": "2026-11-20T00:00:00Z",
+      "mensagem": "aprovado"
     },
     "merge_approval": {
       "status": "pendente"
