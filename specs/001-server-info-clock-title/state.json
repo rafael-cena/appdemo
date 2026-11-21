@@ -1,0 +1,32 @@
+{
+  "feature": "001-server-info-clock-title",
+  "base_branch": "main",
+  "branch": "001-server-info-clock-title",
+  "gh_path": "gh",
+  "pull_request": "",
+  "commands": {
+    "test": "npm test",
+    "lint": null,
+    "build": null
+  },
+  "last_reviewed_commit": "",
+  "stage": "AGUARDANDO_REVISAO_HUMANA",
+  "artifacts": {
+    "spec.md": "E1",
+    "checklists/requirements.md": "E1"
+  },
+  "gates": {
+    "constitution_check": "pending"
+  },
+  "tasks_done": [],
+  "blockers": [],
+  "human_checkpoints": {
+    "specification_review": {
+      "status": "pendente"
+    },
+    "merge_approval": {
+      "status": "pendente"
+    }
+  },
+  "updated_at": "2026-11-21T00:00:00Z"
+}
