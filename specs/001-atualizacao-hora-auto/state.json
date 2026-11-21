@@ -1,0 +1,28 @@
+{
+  "feature": "001-atualizacao-hora-auto",
+  "base_branch": "main",
+  "branch": "001-atualizacao-hora-auto",
+  "gh_path": "gh",
+  "pull_request": "",
+  "commands": {},
+  "last_reviewed_commit": "",
+  "stage": "AGUARDANDO_REVISAO_HUMANA",
+  "artifacts": {
+    "spec.md": "E1",
+    "checklists/requirements.md": "E1"
+  },
+  "gates": {},
+  "tasks_done": [],
+  "blockers": [
+    "GitHub CLI (gh) não encontrado no sistema - necessário para criar PR no E7"
+  ],
+  "human_checkpoints": {
+    "specification_review": {
+      "status": "pendente"
+    },
+    "merge_approval": {
+      "status": "pendente"
+    }
+  },
+  "updated_at": "2026-11-20T00:00:00Z"
+}
