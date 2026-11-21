@@ -17,23 +17,15 @@ describe('GET /api/time - Contract Tests', () => {
         .expect('Content-Type', /application\/json/);
     });
 
-    test('returns JSON with required fields: time, source', async () => {
+    test('returns JSON with required field: time', async () => {
       const response = await request(app)
         .get('/api/time')
         .set('Accept', 'application/json')
         .expect(200);
 
       expect(response.body).toHaveProperty('time');
-      expect(response.body).toHaveProperty('source');
-    });
-
-    test('source field equals "server"', async () => {
-      const response = await request(app)
-        .get('/api/time')
-        .set('Accept', 'application/json')
-        .expect(200);
-
-      expect(response.body.source).toBe('server');
+      // Contract specifies additionalProperties: false, so no extra fields
+      expect(Object.keys(response.body)).toEqual(['time']);
     });
 
     test('time field matches format YYYY-MM-DD HH:mm:ss', async () => {

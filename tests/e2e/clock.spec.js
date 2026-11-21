@@ -85,7 +85,7 @@ test.describe('Clock Auto-Update (US1, SC-001, SC-006)', () => {
 });
 
 test.describe('API Endpoint /api/time (FR-003, Contract)', () => {
-  test('returns valid JSON with time and source', async ({ request }) => {
+  test('returns valid JSON with time field only (per contract additionalProperties: false)', async ({ request }) => {
     const response = await request.get('/api/time', {
       headers: { 'Accept': 'application/json' }
     });
@@ -95,8 +95,8 @@ test.describe('API Endpoint /api/time (FR-003, Contract)', () => {
 
     const data = await response.json();
     expect(data).toHaveProperty('time');
-    expect(data).toHaveProperty('source');
-    expect(data.source).toBe('server');
+    // Contract specifies additionalProperties: false - only 'time' field allowed
+    expect(Object.keys(data)).toEqual(['time']);
     expect(data.time).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
   });
 

@@ -3,7 +3,7 @@ const app = require('../../app');
 
 describe('Error Handling and Edge Cases', () => {
   describe('GET /api/time error handling (lines 39-40)', () => {
-    test('would return 500 if moment throws (mocked)', async () => {
+    test('returns 200 with time field only (per contract)', async () => {
       // This tests the try/catch branch by verifying the error handling structure exists
       // The actual error path is tested by the route structure
       const response = await request(app)
@@ -13,7 +13,8 @@ describe('Error Handling and Edge Cases', () => {
       // Should succeed normally (moment doesn't throw in normal conditions)
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('time');
-      expect(response.body).toHaveProperty('source', 'server');
+      // Contract specifies additionalProperties: false - only 'time' field
+      expect(Object.keys(response.body)).toEqual(['time']);
     });
   });
 

@@ -10,7 +10,7 @@
     "build": null
   },
   "last_reviewed_commit": "",
-  "stage": "REVISANDO",
+  "stage": "TESTANDO",
   "artifacts": {
     "spec.md": "E1",
     "checklists/requirements.md": "E1",
@@ -31,7 +31,8 @@
     "tests/e2e/clock.spec.js": "E4",
     "playwright.config.js": "E4",
     ".gitignore": "E4",
-    "review-report.md": "E5"
+    "review-report.md": "E5",
+    "qa-report.md": "E6"
   },
   "gates": {
     "constitution_check": "pass",
@@ -41,7 +42,8 @@
       "title_change": "direct edit in index.ejs"
     },
     "analysis_complete": true,
-    "review_verdict": "aprovado com ressalvas"
+    "review_verdict": "aprovado com ressalvas",
+    "qa_verdict": "aprovado"
   },
   "tasks_done": [
     "T001-T021"

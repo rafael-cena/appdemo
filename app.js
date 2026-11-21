@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   // Obter o endereço IP do servidor
-  const ip = getIpAddress() + "GITACTIONS";
+  const ip = getIpAddress();
 
   // Obter a hora atual do servidor
   const horaAtual = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -34,7 +34,7 @@ app.get('/api/time', (req, res) => {
       'Pragma': 'no-cache',
       'Expires': '0'
     });
-    res.status(200).json({ time, source: 'server' });
+    res.status(200).json({ time });
   } catch (error) {
     console.error('Erro ao obter hora do servidor:', error);
     res.status(500).json({ error: 'Falha ao obter hora do servidor' });

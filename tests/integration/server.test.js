@@ -76,12 +76,14 @@ describe('GET / - Integration Tests', () => {
       expect(response.text).not.toContain('Endereço IP não encontrado');
     });
 
-    test('IP contains GITACTIONS suffix (current implementation)', async () => {
+    test('IP contains valid IPv4 address (no GITACTIONS suffix)', async () => {
       const response = await request(app)
         .get('/')
         .expect(200);
 
-      expect(response.text).toContain('GITACTIONS');
+      // IP should be valid IPv4 format without GITACTIONS suffix
+      expect(response.text).toMatch(/Endereço IP do Servidor: \d+\.\d+\.\d+\.\d+/);
+      expect(response.text).not.toContain('GITACTIONS');
     });
   });
 });
