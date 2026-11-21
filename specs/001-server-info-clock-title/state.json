@@ -10,15 +10,33 @@
     "build": null
   },
   "last_reviewed_commit": "",
-  "stage": "ESPECIFICACAO_APROVADA",
+  "stage": "IMPLEMENTANDO",
   "artifacts": {
     "spec.md": "E1",
-    "checklists/requirements.md": "E1"
+    "checklists/requirements.md": "E1",
+    "plan.md": "E2",
+    "research.md": "E2",
+    "data-model.md": "E2",
+    "contracts/api-time.json": "E2",
+    "quickstart.md": "E2",
+    "tasks.md": "E3",
+    "app.js": "E4",
+    "views/index.ejs": "E4",
+    "public/js/clock.js": "E4",
+    "package.json": "E4",
+    "tests/unit/time-api.test.js": "E4",
+    "tests/unit/title.test.js": "E4",
+    "tests/unit/error-handling.test.js": "E4",
+    "tests/integration/server.test.js": "E4",
+    "tests/e2e/clock.spec.js": "E4",
+    "playwright.config.js": "E4",
+    ".gitignore": "E4"
   },
   "gates": {
-    "constitution_check": "pass"
+    "constitution_check": "pass",
+    "analysis_complete": true
   },
-  "tasks_done": [],
+  "tasks_done": ["T001-T024"],
   "blockers": [],
   "human_checkpoints": {
     "specification_review": {

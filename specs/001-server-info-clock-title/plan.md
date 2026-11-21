@@ -1,113 +1,104 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Server Info Clock Title
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Branch**: `001-server-info-clock-title` | **Date**: 2026-11-21 | **Spec**: specs/001-server-info-clock-title/spec.md
 
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
-
-**Note**: This template is filled in by the `/speckit-plan` command; its definition describes the execution workflow.
+**Input**: Feature specification from `specs/001-server-info-clock-title/spec.md`
 
 ## Summary
 
-[Extract from feature spec: primary requirement + technical approach from research]
+This feature implements two changes to the server information page (root route `/`):
+1. **P1 (Primary)**: Real-time server clock updates every second without page reload using client-side polling to `/api/time` endpoint
+2. **P2 (Secondary)**: Update page title and heading from "Informações do Servidor (ALTERADO)" to "Informações do Servidor (alterado pelo Claude Code)"
+
+The technical approach uses progressive enhancement: server-rendered initial time with client-side polling for updates, graceful degradation to static time if JavaScript disabled.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+**Language/Version**: Node.js 18+ (Express.js)
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+**Primary Dependencies**: 
+- express ^4.18.2 (web framework)
+- ejs ^3.1.9 (template engine)
+- moment ^2.29.4 (date/time formatting)
+- os (built-in, server IP detection)
 
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+**Storage**: N/A (no database; stateless server info display)
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+**Testing**: 
+- Unit/Integration: Jest 29.7.0 with supertest 6.3.4 (coverage threshold: 80% statements/branches/lines, 75% functions)
+- E2E: Playwright 1.42.1
 
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Target Platform**: Web browser (desktop/mobile), Node.js server (Linux/Windows/macOS)
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: Web application (Express + EJS server-rendered with client-side enhancement)
 
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
+**Performance Goals**: 
+- Initial page load < 2 seconds (SC-005)
+- Time updates ±100ms tolerance every second (SC-001)
+- No memory leaks or excessive CPU over 5 minutes (SC-006)
 
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
+**Constraints**: 
+- Stack unchanged: Express/EJS/moment/os
+- Scope limited to root route `/` only
+- No authentication required
+- Progressive enhancement mandatory (server-rendered fallback)
+- Client-side increments based on initial server time (no repeated server requests for time)
 
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
-
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Scale/Scope**: Single page, single route, minimal UI change
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| I. Constitution as Single Source of Truth | PASS | Skill prevails over constitution |
+| II. No Manual Edits to Spec Kit Artifacts | PASS | All artifacts generated via skill |
+| III. Developer-Only Implementation | PASS | Plan only, no implementation code |
+| IV. Orchestrator-Managed Git Operations | PASS | No git ops in this phase |
+| V. Feature Branch Discipline | PASS | Confirmed on `001-server-info-clock-title` |
+| VI. Structured Identifiers | PASS | FR/SC/US/T identifiers used |
+| VII. Two Human Checkpoints | PASS | Checkpoint 1 approved (spec.md) |
+| VIII. Autonomous Flow Between Checkpoints | PASS | Planning phase autonomous |
+
+**Gate Result**: PASS — No violations, no justification needed.
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/[###-feature]/
+specs/001-server-info-clock-title/
 ├── plan.md              # This file (/speckit-plan command output)
 ├── research.md          # Phase 0 output (/speckit-plan command)
 ├── data-model.md        # Phase 1 output (/speckit-plan command)
 ├── quickstart.md        # Phase 1 output (/speckit-plan command)
 ├── contracts/           # Phase 1 output (/speckit-plan command)
+│   └── api-time.json    # GET /api/time endpoint contract
 └── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
+# Option 2: Web application (Express backend + EJS frontend)
+app.js                   # Express server with routes
+views/
+  └── index.ejs          # EJS template for root route
+public/
+  └── js/
+      └── clock.js       # Client-side polling logic
+package.json             # Dependencies and scripts
 tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+  ├── unit/              # Unit tests (Jest)
+  ├── integration/       # Integration tests (Jest + supertest)
+  └── e2e/               # E2E tests (Playwright)
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Existing Express/EJS web application structure retained. Feature modifies `app.js` (adds/verifies `/api/time` endpoint), `views/index.ejs` (title/heading update), and `public/js/clock.js` (polling logic). Tests organized by type in `tests/` directory.
 
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+No violations — Constitution Check passed cleanly. No complexity justification required.
