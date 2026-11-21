@@ -14,6 +14,7 @@ A constituição do projeto está em `.specify/memory/constitution.md` e governa
 4. **Subagentes não fazem commits, pushes nem merges** O orquestrador faz os commits na branch da feature. O push só acontece com confirmação do humano no prompt de permissão. O merge é sempre do humano.
 5. **Sempre confirmar a branch da feature** antes de agir: `git switch <branch-da-feature>` e `git branch --show-current`. NuNunca trabalhar na branch base nem criar branches novas. Única exceção: o orquestrador cria a branch da feature (`git switch -c <BRANCH_NAME>`) logo após o `speckit-specify` retornar.
 6. **Identificadores:** `FR-001` (requisitos funcionais), `SC-001` (critérios de sucesso), `US1`, `US2`… (histórias), `T001` (tarefas), `[P]` (paralelismo), `[USn]` (rastreabilidade).
+7. **Registro no Slack** Ao concluir a tarefa, antes de retornar ao orquestrador, cada subagente executa `bash .claude/scripts/notify-slack.sh "<nome-do-subagente>" "<STATUS>" "<feature>: <resumo de uma linha, sem aspas>"`. É uma notificação, não uma interação com o humano: não aguarde resposta. Se o comando falhar, registre o erro em BLOQUEIOS e continue.
 
 ## Fluxo E0–E8 com dois checkpoints humanos
 

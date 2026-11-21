@@ -25,7 +25,8 @@
       "Bash(gh pr checks*)",
       "Bash(gh pr view*)",
       "Bash(gh auth status*)",
-      "Bash(npm test*)"
+      "Bash(npm test*)",
+      "Bash(bash .claude/scripts/notify-slack.sh*)"
     ],
     "ask": [
       "Bash(git push*)",
